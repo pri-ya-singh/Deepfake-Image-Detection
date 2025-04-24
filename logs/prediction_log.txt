@@ -1,0 +1,14 @@
+2025-04-25 05:19:05,005 - WARNING -  * Debugger is active!
+2025-04-25 05:19:05,060 - INFO -  * Debugger PIN: 820-095-626
+2025-04-25 05:19:45,654 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.25.170.43:5000
+2025-04-25 05:19:45,654 - INFO - [33mPress CTRL+C to quit[0m
+2025-04-25 05:19:45,660 - INFO -  * Restarting with watchdog (windowsapi)
+2025-04-25 05:19:55,899 - WARNING -  * Debugger is active!
+2025-04-25 05:19:55,902 - INFO -  * Debugger PIN: 820-095-626
+2025-04-25 05:20:37,260 - INFO - 127.0.0.1 - - [25/Apr/2025 05:20:37] "GET / HTTP/1.1" 200 -
+2025-04-25 05:20:37,359 - INFO - 127.0.0.1 - - [25/Apr/2025 05:20:37] "[36mGET /static/spinner1.gif HTTP/1.1[0m" 304 -
+2025-04-25 05:20:53,053 - INFO - Prediction: Fake, Confidence: 0.9956
+2025-04-25 05:20:53,053 - INFO - 127.0.0.1 - - [25/Apr/2025 05:20:53] "POST /predict HTTP/1.1" 200 -

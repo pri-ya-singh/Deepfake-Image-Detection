@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Image Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(228, 232, 233, 0.785);
+            text-align: center;
+            padding-top: 50px;
+            margin: 0;
+        }
+        h1 {
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .upload-box {
+            background-color: white;
+            display: inline-block;
+            padding: 30px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .upload-box input[type="file"] {
+            margin: 15px 0;
+            width: 90%;
+            padding: 5px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-box input[type="file"]:hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+        .upload-box button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .upload-box button:hover {
+            background-color: #0056b3;
+        }
+        .spinner {
+            margin-top: 20px;
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+        }
+        img#imagePreview {
+            display: none;
+            margin-top: 15px;
+            max-width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .upload-box {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .upload-box button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Deepfake Image Detection</h1>
+
+    <div class="upload-box">
+        <h2>Upload Image</h2>
+        <input type="file" name="image" id="imageInput" accept="image/*" onchange="previewImage(event)" required>
+        <br>
+        <img id="imagePreview" alt="Image Preview" />
+        <br>
+        <button type="button" onclick="submitImage()">Detect Deepfake</button>
+
+        <div class="spinner" id="imageSpinner">
+            <img src="static/spinner1.gif" alt="Loading..." style="width:40px;">
+        </div>
+
+        <div class="result" id="detectionResult">
+            <!-- Result will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event){
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const file = imageInput.files[0];
+            if (file){
+                const url = URL.createObjectURL(file);
+                imagePreview.src = url;
+                imagePreview.style.display = 'block';
+            }
+        }
+
+        function submitImage(){
+            const imageInput = document.getElementById('imageInput');
+            const imageSpinner = document.getElementById('imageSpinner');
+            const detectionResult = document.getElementById('detectionResult');
+            const file = imageInput.files[0];
+            if (!file) {
+                alert('Please upload an image file.');
+                return;
+            }
+
+            imageSpinner.style.display = 'block';
+            detectionResult.innerHTML = ''; 
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                imageSpinner.style.display = 'none';
+                const isFake = data.prediction.toLowerCase().includes('fake');
+                const resultText = `Prediction: <span style="color:${isFake ? 'red' : 'green'}">${data.prediction}</span><br>Confidence: ${data.confidence.toFixed(2)}`;
+                detectionResult.innerHTML = resultText;
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                imageSpinner.style.display = 'none';
+                detectionResult.innerHTML = 'An error occurred while processing the image.';
+            });
+        }
+    </script>
+
+</body>
+</html>
